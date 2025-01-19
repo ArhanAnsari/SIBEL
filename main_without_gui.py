@@ -1,3 +1,4 @@
+import logging
 import pyttsx3
 import requests
 import speech_recognition as sr
@@ -21,6 +22,8 @@ engine.setProperty('volume', 1.5)
 engine.setProperty('rate', 220)
 voices = engine.getProperty('voices')
 engine.setProperty('voice', voices[1].id)
+
+logging.getLogger("comtypes").setLevel(logging.WARNING)
 
 USER = config('USER')
 HOSTNAME = config('BOT')
@@ -254,8 +257,8 @@ if __name__ == '__main__':
 
             elif 'subscribe' in query:
                 speak(
-                    "Everyone who are watching this video, Please subscribe for more amazing content from error by "
-                    "night. I will show you how to do this")
+                    "Everyone who are watching this video, Please subscribe for more amazing content from CodeWithArhan "
+                    "I will show you how to do this")
                 speak("Firstly Go to youtube")
                 webbrowser.open("https://www.youtube.com/")
                 speak("click on the search bar")
