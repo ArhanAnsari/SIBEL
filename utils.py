@@ -93,7 +93,7 @@ def weather_forecast(city):
     weather = res["weather"][0]["main"]
     temp = res["main"]["temp"]
     feels_like = res["main"]["feels_like"]
-    return weather, f"{temp}°C", f"{feels_like}°C"
+    return weather, f"{temp}°C", f"{feels_like}°F"
 
 def send_whatsapp_message(number, message):
     kit.sendwhatmsg_instantly(f"+91{number}", message)
