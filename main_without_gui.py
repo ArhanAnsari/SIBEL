@@ -95,6 +95,12 @@ if __name__ == '__main__':
             query = take_command().lower()
             if "how are you" in query:
                 speak("I am absolutely fine sir. What about you")
+            
+            elif "what is your name" in query:
+                speak("My name is SIBEL sir")
+
+            elif "I am fine" in query:
+                speak("That's great to hear sir. How can I help you?")
 
             elif "open command prompt" in query:
                 speak("Opening command prompt")
@@ -227,7 +233,7 @@ if __name__ == '__main__':
 
 
             elif 'what is' in query or 'who is' in query or 'which is' in query:
-                app_id = ""
+                app_id = "9A23TV-H7KL7E2VTK"
                 client = wolframalpha.Client(app_id)
                 try:
 

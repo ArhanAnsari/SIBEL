@@ -11,7 +11,7 @@ from pydub.playback import play
 from constants import (
     EMAIL,
     PASSWORD,
-    # IP_ADDR_API_URL,
+    IP_ADDR_API_URL,
     NEWS_FETCH_API_URL,
     WEATHER_FORECAST_API_URL,
     SMTP_URL,
@@ -89,13 +89,9 @@ def get_news():
 
 def weather_forecast(city):
     res = requests.get(
-        WEATHER_FORECAST_API_URL,
-        params={
-            "q":city,
-            "appid":WEATHER_FORECAST_API_KEY,
-            "units":"metric"
-        },
-        ).json()
+        f"{WEATHER_FORECAST_API_URL}?q={city}&appid={WEATHER_FORECAST_API_KEY}").json()
+    # res = requests.get(
+    #     f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={OPENWEATHER_APP_ID}&units=metric").json()
     weather = res["weather"][0]["main"]
     temp = res["main"]["temp"]
     feels_like = res["main"]["feels_like"]
