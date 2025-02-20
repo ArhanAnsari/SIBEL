@@ -10,22 +10,22 @@ import wolframalpha
 import pyautogui
 import webbrowser
 import time
+import os
 
 from datetime import datetime
 from decouple import config
 from random import choice
 from const import random_text
-# from constants import GEMINI_API_KEY
 from utils import find_my_ip, send_whatsapp_message, search_on_google, search_on_wikipedia, youtube, send_email, get_news, weather_forecast
 import google.generativeai as genai
 
-GEMINI_API_KEY="Your Gemini API Key"
+GEMINI_API_KEY=os.environ.get("GEMINI_API_KEY")
 
 genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel('gemini-1.5-flash')
 
 engine = pyttsx3.init()
-engine.setProperty('volume', 1.5)
+engine.setProperty('volume', 1.0)
 engine.setProperty('rate', 220)
 voices = engine.getProperty('voices')
 engine.setProperty('voice', voices[1].id)
@@ -71,6 +71,7 @@ keyboard.add_hotkey('ctrl+alt+k', start_listening)
 keyboard.add_hotkey('ctrl+alt+p', pause_listening)
 
 
+# Take Voice Command
 def take_command():
     r = sr.Recognizer()
     with sr.Microphone() as source:
@@ -79,31 +80,29 @@ def take_command():
         audio = r.listen(source)
 
     try:
-        print("Recognizing....")
-        queri = r.recognize_google(audio, language='en-in')
-        print(queri)
-        if not 'stop' in queri or 'exit' in queri:
-            speak(choice(random_text))
-        else:
-            hour = datetime.now().hour
-            if hour >= 21 and hour < 6:
-                speak("Good night sir,take care!")
-            else:
-                speak("Have a good day sir!")
+        print("Recognizing...")
+        query = r.recognize_google(audio, language='en-in').lower()
+        print(query)
+
+        if 'stop' in query or 'exit' in query:
+            speak("Goodbye! Have a great day.")
             exit()
 
-    except Exception:
-        speak("Sorry I couldn't understand. Can you please repeat that?")
-        queri = 'None'
-    return queri
+        speak(choice(random_text))
+        return query
 
+    except Exception:
+        speak("Sorry, I couldn't understand. Can you repeat?")
+        return "None"
+
+# Gemini AI Response
 def get_gemini_response(query):
-        try:
-            response = model.generate_content(query)
-            return response.text
-        except Exception as e:
-            print(f"Error getting Gemini response: {e}")
-            return "I'm sorry, I couldn't process that request."
+    try:
+        response = model.generate_content(query)
+        return response.text if response and hasattr(response, 'text') else "I'm sorry, I couldn't process that request."
+    except Exception as e:
+        print(f"Error getting Gemini response: {e}")
+        return "I'm sorry, I couldn't process that request."
 
 if __name__ == '__main__':
     greet_me()
