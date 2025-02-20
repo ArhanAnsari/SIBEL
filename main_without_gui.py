@@ -15,7 +15,14 @@ from datetime import datetime
 from decouple import config
 from random import choice
 from const import random_text
+# from constants import GEMINI_API_KEY
 from utils import find_my_ip, send_whatsapp_message, search_on_google, search_on_wikipedia, youtube, send_email, get_news, weather_forecast
+import google.generativeai as genai
+
+GEMINI_API_KEY="Your Gemini API Key"
+
+genai.configure(api_key=GEMINI_API_KEY)
+model = genai.GenerativeModel('gemini-1.5-flash')
 
 engine = pyttsx3.init()
 engine.setProperty('volume', 1.5)
@@ -90,6 +97,13 @@ def take_command():
         queri = 'None'
     return queri
 
+def get_gemini_response(query):
+        try:
+            response = model.generate_content(query)
+            return response.text
+        except Exception as e:
+            print(f"Error getting Gemini response: {e}")
+            return "I'm sorry, I couldn't process that request."
 
 if __name__ == '__main__':
     greet_me()
@@ -255,6 +269,15 @@ if __name__ == '__main__':
                 except StopIteration:
                     speak("I couldn't find that. Please try again.")
 
+            elif 'tell me about' in query:
+                try:
+                    gemini_response = model.generate_content(query).text
+                    speak(gemini_response)
+                    print(gemini_response)
+                except Exception as e:
+                    print(f"Error in Gemini query: {e}")
+                    speak("I'm sorry, I couldn't find an answer to that.")
+
             elif 'subscribe' in query:
                 speak(
                     "Everyone who are watching this video, Please subscribe for more amazing content from CodeWithArhan "
@@ -279,3 +302,14 @@ if __name__ == '__main__':
                 pyautogui.click(x=1750, y=314, clicks=1, interval=0, button='left')
                 speak("turn on all notifications")
                 pyautogui.click(x=1750, y=320, clicks=1, interval=0, button='left')
+
+            else:
+                try:
+                    gemini_response =get_gemini_response(query)
+                    gemini_response = gemini_response.replace("*","")
+                    if gemini_response and gemini_response != "I'm sorry, I couldn't process that request.":
+                        speak(gemini_response)
+                        print(gemini_response)
+                except Exception as e:
+                    print(f"Error in Gemini query: {e}")
+                    speak("I'm sorry, I couldn't find an answer to that.")
